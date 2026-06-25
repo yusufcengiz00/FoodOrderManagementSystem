@@ -1,0 +1,82 @@
+﻿@model IEnumerable<FoodOrderManagementSystem.Models.User>
+@{
+    ViewData["Title"] = "Kullanıcılar";
+    ViewData["Breadcrumb"] = "Yönetim / Kullanıcılar";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Kullanıcılar</h1>
+        <p>Sisteme kayıtlı tüm kullanıcılar</p>
+    </div>
+    <a href="/User/Edit/0" class="btn btn-primary">+ Yeni Kullanıcı</a>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-icon">👤</div>
+        <div class="stat-label">Toplam Kullanıcı</div>
+        <div class="stat-value">@Model.Count()</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Kullanıcı Listesi</span>
+        <span style="font-size:13px; color:var(--muted);">@Model.Count() kullanıcı</span>
+    </div>
+    <div class="table-wrap">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">👤</div>
+                <h3>Henüz kullanıcı yok</h3>
+                <p>Sisteme ilk kullanıcıyı ekleyin.</p>
+                <a href="/User/Edit/0" class="btn btn-primary">+ Kullanıcı Ekle</a>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kullanıcı</th>
+                        <th>E-posta</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td style="color:var(--muted); font-weight:600; font-size:12px;">
+                                #@user.UserId
+                            </td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:34px; height:34px; background:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:#fff; flex-shrink:0;">
+                                        @user.FullName?.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <span style="font-weight:500;">@user.FullName</span>
+                                </div>
+                            </td>
+                            <td style="color:var(--muted);">@user.Email</td>
+                            <td>
+                                <div style="display:flex; gap:6px;">
+                                    <a href="/User/Edit/@user.UserId" class="btn btn-secondary btn-sm">
+                                        ✏️ Düzenle
+                                    </a>
+                                    <button class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete('/User/Delete/@user.UserId')">
+                                        🗑 Sil
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

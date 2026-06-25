@@ -1,0 +1,98 @@
+﻿@model IEnumerable<FoodOrderManagementSystem.Models.Product>
+@{
+    ViewData["Title"] = "Ürünler";
+    ViewData["Breadcrumb"] = "Yönetim / Ürünler";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Ürünler</h1>
+        <p>Menüdeki tüm ürünler</p>
+    </div>
+    <a href="/Product/Edit/0" class="btn btn-primary">+ Yeni Ürün</a>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-icon">🍕</div>
+        <div class="stat-label">Toplam Ürün</div>
+        <div class="stat-value">@Model.Count()</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Ortalama Fiyat</div>
+        <div class="stat-value" style="color:var(--accent);">
+            ₺@(Model.Any() ? Model.Average(p => p.Price).ToString("N2") : "0.00")
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-label">En Yüksek Fiyat</div>
+        <div class="stat-value" style="color:var(--success);">
+            ₺@(Model.Any() ? Model.Max(p => p.Price).ToString("N2") : "0.00")
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Ürün Listesi</span>
+        <span style="font-size:13px; color:var(--muted);">@Model.Count() ürün</span>
+    </div>
+    <div class="table-wrap">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🍽️</div>
+                <h3>Henüz ürün eklenmemiş</h3>
+                <p>Menünüze ilk ürünü ekleyin.</p>
+                <a href="/Product/Edit/0" class="btn btn-primary">+ Ürün Ekle</a>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ürün Adı</th>
+                        <th>Fiyat</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model)
+                    {
+                        <tr>
+                            <td style="color:var(--muted); font-weight:600; font-size:12px;">
+                                #@product.ProductId
+                            </td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <div style="width:34px; height:34px; background:var(--accent-dim); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;">
+                                        🍕
+                                    </div>
+                                    <span style="font-weight:500;">@product.ProductName</span>
+                                </div>
+                            </td>
+                            <td style="font-weight:700; color:var(--accent);">
+                                ₺@product.Price.ToString("N2")
+                            </td>
+                            <td>
+                                <div style="display:flex; gap:6px;">
+                                    <a href="/Product/Edit/@product.ProductId" class="btn btn-secondary btn-sm">
+                                        ✏️ Düzenle
+                                    </a>
+                                    <button class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete('/Product/Delete/@product.ProductId')">
+                                        🗑 Sil
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

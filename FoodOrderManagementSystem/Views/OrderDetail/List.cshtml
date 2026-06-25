@@ -1,0 +1,69 @@
+﻿@model IEnumerable<FoodOrderManagementSystem.Models.Order>
+@{
+    ViewData["Title"] = "Sipariş Fişleri";
+    ViewData["Breadcrumb"] = "Yönetim / Sipariş Fişleri";
+    var users = ViewBag.Users as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<div class="page-header">
+    <div>
+        <h1>Sipariş Fişleri</h1>
+        <p>Tamamlanan siparişlerin fiş çıktılarını görüntüleyin</p>
+    </div>
+    <a asp-controller="Order" asp-action="List" class="btn btn-secondary">← Siparişlere Dön</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Fiş Listesi</span>
+        <span style="font-size:13px; color:var(--muted);">@Model.Count() sipariş</span>
+    </div>
+    <div class="table-wrap">
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🧾</div>
+                <h3>Henüz fiş yok</h3>
+                <p>Sipariş oluşturulduktan sonra fiş burada görüntülenebilir.</p>
+                <a asp-controller="Order" asp-action="Edit" class="btn btn-primary">+ Yeni Sipariş</a>
+            </div>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Müşteri</th>
+                        <th>Tarih</th>
+                        <th>Toplam</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        var customerName = users.ContainsKey(order.UserId) ? users[order.UserId] : $"Kullanıcı #{order.UserId}";
+                        <tr>
+                            <td style="font-weight:600; color:var(--accent);">#@order.OrderId</td>
+                            <td>@customerName</td>
+                            <td style="color:var(--muted);">
+                                @order.OrderDate.ToString("dd MMM yyyy HH:mm")
+                            </td>
+                            <td style="font-weight:700; color:var(--accent);">
+                                ₺@order.TotalAmount.ToString("N2")
+                            </td>
+                            <td>
+                                <a asp-controller="OrderDetail" asp-action="Receipt"
+                                   asp-route-orderId="@order.OrderId"
+                                   class="btn btn-primary btn-sm">
+                                    🧾 Fişi Aç
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

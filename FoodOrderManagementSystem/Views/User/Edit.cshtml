@@ -1,0 +1,67 @@
+﻿@model FoodOrderManagementSystem.Models.User
+@{
+    var isNew = Model.UserId == 0;
+    ViewData["Title"] = isNew ? "Yeni Kullanıcı" : "Kullanıcı Düzenle";
+    ViewData["Breadcrumb"] = $"Yönetim / Kullanıcılar / {(isNew ? "Yeni" : "Düzenle")}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>@ViewData["Title"]</h1>
+        <p>@(isNew ? "Sisteme yeni kullanıcı kaydedin" : $"#{Model.UserId} — {Model.FullName}")</p>
+    </div>
+    <a href="/User/List" class="btn btn-secondary">← Listeye Dön</a>
+</div>
+
+<div class="card" style="max-width:480px;">
+    <div class="card-header">
+        <span class="card-title">@(isNew ? "Kullanıcı Bilgileri" : "Bilgileri Güncelle")</span>
+    </div>
+    <div class="card-body">
+        <form action="/User/Save" method="post">
+            <div class="form-grid">
+                <input type="hidden" name="UserId" value="@Model.UserId" />
+
+                <div class="form-group">
+                    <label class="form-label">Ad Soyad</label>
+                    <input class="form-control"
+                           type="text"
+                           name="FullName"
+                           value="@Model.FullName"
+                           placeholder="örn. Ahmet Yılmaz"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">E-posta Adresi</label>
+                    <input class="form-control"
+                           type="email"
+                           name="Email"
+                           value="@Model.Email"
+                           placeholder="ornek@mail.com"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        @(isNew ? "Şifre" : "Yeni Şifre (boş bırakılırsa değişmez)")
+                    </label>
+                    <input class="form-control"
+                           type="password"
+                           name="Password"
+                           placeholder="••••••••"
+                    @(isNew ? "required" : "") />
+                </div>
+
+                <div class="divider"></div>
+
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <a href="/User/List" class="btn btn-secondary">İptal</a>
+                    <button type="submit" class="btn btn-primary">
+                        @(isNew ? "✅ Kullanıcı Oluştur" : "💾 Değişiklikleri Kaydet")
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

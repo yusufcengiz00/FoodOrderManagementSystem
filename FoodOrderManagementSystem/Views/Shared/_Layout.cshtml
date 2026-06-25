@@ -1,0 +1,681 @@
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — FoodOrder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            :root {
+                --bg: #0F1117;
+                --surface: #1A1D27;
+                --surface2: #22263A;
+                --border: #2E3248;
+                --accent: #FF6B35;
+                --accent-dim: #FF6B3520;
+                --text: #E8EAF0;
+                --muted: #7B8099;
+                --success: #2ECC71;
+                --danger: #E74C3C;
+                --warning: #F39C12;
+                --radius: 10px;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                display: flex;
+                min-height: 100vh;
+            }
+
+            /* ── SIDEBAR ── */
+            .sidebar {
+                width: 240px;
+                min-height: 100vh;
+                background: var(--surface);
+                border-right: 1px solid var(--border);
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+            }
+
+            .sidebar-logo {
+                padding: 28px 24px 24px;
+                border-bottom: 1px solid var(--border);
+            }
+
+                .sidebar-logo .logo-mark {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    text-decoration: none;
+                }
+
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                background: var(--accent);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+
+            .logo-text {
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--text);
+                letter-spacing: -0.3px;
+            }
+
+            .logo-sub {
+                font-size: 10px;
+                color: var(--muted);
+                font-weight: 400;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            .sidebar-nav {
+                padding: 20px 12px;
+                flex: 1;
+            }
+
+            .nav-section-label {
+                font-size: 10px;
+                font-weight: 600;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 1.2px;
+                padding: 0 12px;
+                margin-bottom: 8px;
+                margin-top: 20px;
+            }
+
+                .nav-section-label:first-child {
+                    margin-top: 0;
+                }
+
+            .nav-link {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 12px;
+                border-radius: var(--radius);
+                color: var(--muted);
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+                transition: all .15s;
+                margin-bottom: 2px;
+            }
+
+                .nav-link:hover {
+                    background: var(--surface2);
+                    color: var(--text);
+                }
+
+                .nav-link.active {
+                    background: var(--accent-dim);
+                    color: var(--accent);
+                }
+
+                .nav-link .nav-icon {
+                    font-size: 16px;
+                    width: 20px;
+                    text-align: center;
+                }
+
+            .sidebar-footer {
+                padding: 16px 12px;
+                border-top: 1px solid var(--border);
+            }
+
+                .sidebar-footer .nav-link {
+                    margin-bottom: 0;
+                }
+
+            /* ── MAIN ── */
+            .main-wrap {
+                margin-left: 240px;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            .topbar {
+                height: 60px;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 32px;
+                position: sticky;
+                top: 0;
+                z-index: 50;
+            }
+
+            .topbar-title {
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--text);
+            }
+
+            .topbar-breadcrumb {
+                font-size: 12px;
+                color: var(--muted);
+                margin-top: 1px;
+            }
+
+            .topbar-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .avatar {
+                width: 32px;
+                height: 32px;
+                background: var(--accent);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+                font-weight: 700;
+                color: #fff;
+            }
+
+            .page-content {
+                padding: 32px;
+                flex: 1;
+            }
+
+            /* ── CARDS ── */
+            .card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                overflow: hidden;
+            }
+
+            .card-header {
+                padding: 20px 24px;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .card-title {
+                font-size: 15px;
+                font-weight: 600;
+            }
+
+            .card-body {
+                padding: 24px;
+            }
+
+            /* ── TABLE ── */
+            .table-wrap {
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 13.5px;
+            }
+
+            thead th {
+                background: var(--surface2);
+                color: var(--muted);
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: .8px;
+                padding: 12px 16px;
+                text-align: left;
+                border-bottom: 1px solid var(--border);
+            }
+
+            tbody tr {
+                border-bottom: 1px solid var(--border);
+                transition: background .1s;
+            }
+
+                tbody tr:last-child {
+                    border-bottom: none;
+                }
+
+                tbody tr:hover {
+                    background: var(--surface2);
+                }
+
+            tbody td {
+                padding: 14px 16px;
+                color: var(--text);
+                vertical-align: middle;
+            }
+
+            /* ── BADGES ── */
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 3px 10px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 600;
+            }
+
+            .badge-success {
+                background: #2ECC7120;
+                color: var(--success);
+            }
+
+            .badge-danger {
+                background: #E74C3C20;
+                color: var(--danger);
+            }
+
+            .badge-warning {
+                background: #F39C1220;
+                color: var(--warning);
+            }
+
+            .badge-info {
+                background: #3498DB20;
+                color: #3498DB;
+            }
+
+            /* ── BUTTONS ── */
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 16px;
+                border-radius: var(--radius);
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                text-decoration: none;
+                transition: all .15s;
+                font-family: inherit;
+            }
+
+            .btn-primary {
+                background: var(--accent);
+                color: #fff;
+            }
+
+                .btn-primary:hover {
+                    background: #e55a26;
+                }
+
+            .btn-secondary {
+                background: var(--surface2);
+                color: var(--text);
+                border: 1px solid var(--border);
+            }
+
+                .btn-secondary:hover {
+                    background: var(--border);
+                }
+
+            .btn-danger {
+                background: #E74C3C20;
+                color: var(--danger);
+                border: 1px solid #E74C3C30;
+            }
+
+                .btn-danger:hover {
+                    background: #E74C3C35;
+                }
+
+            .btn-sm {
+                padding: 5px 11px;
+                font-size: 12px;
+            }
+
+            /* ── FORMS ── */
+            .form-grid {
+                display: grid;
+                gap: 20px;
+            }
+
+            .form-grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+            }
+
+            .form-label {
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: .7px;
+            }
+
+            .form-control {
+                background: var(--bg);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                color: var(--text);
+                padding: 10px 14px;
+                font-size: 14px;
+                font-family: inherit;
+                transition: border-color .15s;
+                outline: none;
+            }
+
+                .form-control:focus {
+                    border-color: var(--accent);
+                    box-shadow: 0 0 0 3px var(--accent-dim);
+                }
+
+                .form-control::placeholder {
+                    color: var(--muted);
+                }
+
+            select.form-control option {
+                background: var(--surface2);
+            }
+
+            /* ── PAGE HEADER ── */
+            .page-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 28px;
+            }
+
+                .page-header h1 {
+                    font-size: 22px;
+                    font-weight: 700;
+                }
+
+                .page-header p {
+                    font-size: 13px;
+                    color: var(--muted);
+                    margin-top: 4px;
+                }
+
+            /* ── STATS ROW ── */
+            .stats-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 16px;
+                margin-bottom: 28px;
+            }
+
+            .stat-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                padding: 20px;
+            }
+
+                .stat-card .stat-label {
+                    font-size: 11px;
+                    font-weight: 600;
+                    color: var(--muted);
+                    text-transform: uppercase;
+                    letter-spacing: .8px;
+                    margin-bottom: 8px;
+                }
+
+                .stat-card .stat-value {
+                    font-size: 26px;
+                    font-weight: 700;
+                }
+
+                .stat-card .stat-icon {
+                    font-size: 22px;
+                    margin-bottom: 10px;
+                }
+
+            /* ── ALERTS ── */
+            .alert {
+                padding: 14px 18px;
+                border-radius: var(--radius);
+                font-size: 13.5px;
+                margin-bottom: 20px;
+                border-left: 3px solid;
+            }
+
+            .alert-success {
+                background: #2ECC7115;
+                border-color: var(--success);
+                color: #a8f0c6;
+            }
+
+            .alert-danger {
+                background: #E74C3C15;
+                border-color: var(--danger);
+                color: #f5a0a0;
+            }
+
+            /* ── EMPTY STATE ── */
+            .empty-state {
+                text-align: center;
+                padding: 60px 24px;
+            }
+
+                .empty-state .empty-icon {
+                    font-size: 48px;
+                    margin-bottom: 16px;
+                }
+
+                .empty-state h3 {
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                }
+
+                .empty-state p {
+                    font-size: 13px;
+                    color: var(--muted);
+                    margin-bottom: 20px;
+                }
+
+            /* ── DIVIDER ── */
+            .divider {
+                height: 1px;
+                background: var(--border);
+                margin: 20px 0;
+            }
+
+            /* ── CONFIRM MODAL ── */
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: #00000080;
+                z-index: 200;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .modal-overlay.open {
+                    display: flex;
+                }
+
+            .modal-box {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 32px;
+                max-width: 400px;
+                width: 90%;
+                text-align: center;
+            }
+
+                .modal-box .modal-icon {
+                    font-size: 40px;
+                    margin-bottom: 14px;
+                }
+
+                .modal-box h3 {
+                    font-size: 17px;
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                }
+
+                .modal-box p {
+                    font-size: 13px;
+                    color: var(--muted);
+                    margin-bottom: 24px;
+                }
+
+            .modal-actions {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            @@media (max-width: 768px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                }
+
+                .main-wrap {
+                    margin-left: 0;
+                }
+
+                .form-grid-2 {
+                    grid-template-columns: 1fr;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a asp-controller="Admin" asp-action="Index" class="logo-mark">
+                <div class="logo-icon">🍽</div>
+                <div>
+                    <div class="logo-text">FoodOrder</div>
+                    <div class="logo-sub">Yönetim Paneli</div>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Genel</div>
+            <a asp-controller="Admin" asp-action="Index"
+               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" ? "active" : "")">
+                <span class="nav-icon">🏠</span> Ana Sayfa
+            </a>
+
+            <div class="nav-section-label">Yönetim</div>
+            <a asp-controller="Order" asp-action="List"
+               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Order" ? "active" : "")">
+                <span class="nav-icon">📋</span> Siparişler
+            </a>
+            <a asp-controller="OrderDetail" asp-action="List"
+               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "OrderDetail" ? "active" : "")">
+                <span class="nav-icon">🧾</span> Sipariş Fişleri
+            </a>
+            <a asp-controller="Product" asp-action="List"
+               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")">
+                <span class="nav-icon">🍕</span> Ürünler
+            </a>
+            <a asp-controller="User" asp-action="List"
+               class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")">
+                <span class="nav-icon">👤</span> Kullanıcılar
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a asp-controller="Account" asp-action="Logout" class="nav-link">
+                <span class="nav-icon">🚪</span> Çıkış Yap
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main-wrap">
+        <header class="topbar">
+            <div>
+                <div class="topbar-title">@ViewData["Title"]</div>
+                <div class="topbar-breadcrumb">@ViewData["Breadcrumb"]</div>
+            </div>
+            <div class="topbar-right" style="display:flex; align-items:center; gap:10px;">
+                @if (Context.Session.GetString("UserFullName") != null)
+                {
+                    <span style="font-size:13px; color:var(--muted);">Merhaba, @Context.Session.GetString("UserFullName")</span>
+                    var name = Context.Session.GetString("UserFullName") ?? "User";
+                    var initials = string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => s[0].ToString().ToUpper()).Take(2));
+                    <div class="avatar">@initials</div>
+                }
+                else
+                {
+                    <div class="avatar">A</div>
+                }
+            </div>
+        </header>
+
+        <main class="page-content">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">✅ @TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">❌ @TempData["Error"]</div>
+            }
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-box">
+            <div class="modal-icon">⚠️</div>
+            <h3>Silmek istediğinize emin misiniz?</h3>
+            <p>Bu işlem geri alınamaz. Kayıt kalıcı olarak silinecektir.</p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Vazgeç</button>
+                <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Evet, Sil</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            function confirmDelete(url) {
+                document.getElementById('confirmDeleteBtn').href = url;
+                document.getElementById('deleteModal').classList.add('open');
+            }
+            function closeDeleteModal() {
+                document.getElementById('deleteModal').classList.remove('open');
+            }
+            document.getElementById('deleteModal').addEventListener('click', function(e) {
+                if (e.target === this) closeDeleteModal();
+            });
+    </script>
+
+</body>
+</html>

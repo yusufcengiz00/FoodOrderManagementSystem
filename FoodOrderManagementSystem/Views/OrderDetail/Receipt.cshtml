@@ -1,0 +1,164 @@
+@model IEnumerable<FoodOrderManagementSystem.Models.OrderDetail>
+@using FoodOrderManagementSystem.Models
+@{
+    ViewData["Title"] = "Sipariş Fişi";
+    var order = ViewBag.Order as Order;
+    var user = ViewBag.User as User;
+    int orderId = order?.OrderId ?? 0;
+    var lineTotal = Model.Sum(d => d.Price * d.Quantity);
+}
+
+<style>
+    @@media print {
+        /* Hide sidebar, topbar and other non-printable components */
+        .sidebar, .topbar, .page-header, .no-print, header, aside, button, .btn {
+            display: none !important;
+        }
+        body {
+            background: #fff !important;
+            color: #000 !important;
+        }
+        .main-wrap {
+            margin-left: 0 !important;
+            padding: 0 !important;
+            min-height: auto !important;
+        }
+        .page-content {
+            padding: 0 !important;
+        }
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            margin: 0 auto !important;
+            max-width: 100% !important;
+        }
+        .card-body {
+            padding: 0 !important;
+        }
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <h1>Sipariş Fişi <span style="color:var(--accent);">#@orderId</span></h1>
+        <p>Bu sayfa salt okunurdur — sipariş çıktısı / fiş görünümü</p>
+    </div>
+    <div style="display:flex; gap:8px;">
+        <a asp-controller="OrderDetail" asp-action="List" class="btn btn-secondary">← Fiş Listesi</a>
+        <button onclick="downloadPDF()" class="btn btn-primary" style="background-color: #2980B9;">
+            📄 PDF İndir
+        </button>
+        <a asp-controller="OrderDetail" asp-action="ExportExcel" asp-route-orderId="@orderId" class="btn btn-secondary" style="background-color: #27AE60; color: #fff; border-color: #27AE60;">
+            📊 Excel İndir
+        </a>
+        <a asp-controller="Order" asp-action="Edit" asp-route-id="@orderId" class="btn btn-primary">✏️ Siparişi Düzenle</a>
+    </div>
+</div>
+
+@if (order != null)
+{
+    <div class="card" id="receipt-card" style="max-width:640px; margin:0 auto;">
+        <div class="card-body" style="padding:32px;">
+
+            <!-- Fiş başlığı -->
+            <div style="text-align:center; margin-bottom:28px; padding-bottom:20px; border-bottom:2px dashed var(--border);">
+                <div style="font-size:28px; margin-bottom:6px;">🍽</div>
+                <div style="font-size:18px; font-weight:700;">FoodOrder</div>
+                <div style="font-size:12px; color:var(--muted); margin-top:4px;">SİPARİŞ FİŞİ</div>
+            </div>
+
+            <!-- Sipariş bilgileri -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; font-size:13px;">
+                <div>
+                    <div style="color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px;">Sipariş No</div>
+                    <div style="font-weight:600; color:var(--accent);">#@order.OrderId</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px;">Tarih</div>
+                    <div style="font-weight:500;">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</div>
+                </div>
+                <div style="grid-column:1 / -1; margin-top:4px;">
+                    <div style="color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px;">Müşteri</div>
+                    <div style="font-weight:500;">@(user?.FullName ?? $"Kullanıcı #{order.UserId}")</div>
+                    @if (user != null)
+                    {
+                        <div style="font-size:12px; color:var(--muted);">@user.Email</div>
+                    }
+                </div>
+            </div>
+
+            <!-- Kalemler -->
+            @if (!Model.Any())
+            {
+                <div class="empty-state" style="padding:32px 0;">
+                    <div class="empty-icon">🛒</div>
+                    <h3>Bu siparişte ürün yok</h3>
+                    <p>Sipariş düzenleme sayfasından ürün ekleyebilirsiniz.</p>
+                </div>
+            }
+            else
+            {
+                <table style="margin-bottom:20px;">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th style="text-align:center;">Adet</th>
+                            <th style="text-align:right;">Birim</th>
+                            <th style="text-align:right;">Tutar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detail in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="font-weight:500;">@detail.ProductName</div>
+                                </td>
+                                <td style="text-align:center;">
+                                    <span class="badge badge-info">@detail.Quantity adet</span>
+                                </td>
+                                <td style="text-align:right; color:var(--muted);">
+                                    ₺@detail.Price.ToString("N2")
+                                </td>
+                                <td style="text-align:right; font-weight:600;">
+                                    ₺@((detail.Price * detail.Quantity).ToString("N2"))
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div style="border-top:2px dashed var(--border); padding-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:13px; color:var(--muted);">@Model.Count() kalem · @Model.Sum(d => d.Quantity) adet</span>
+                    <div style="text-align:right;">
+                        <div style="font-size:12px; color:var(--muted);">GENEL TOPLAM</div>
+                        <div style="font-size:26px; font-weight:700; color:var(--accent);">
+                            ₺@lineTotal.ToString("N2")
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div style="margin-top:28px; text-align:center; font-size:11px; color:var(--muted);">
+                Teşekkür ederiz · FoodOrder Yönetim Sistemi
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    function downloadPDF() {
+        var orderId = '@orderId';
+        var element = document.getElementById('receipt-card');
+        var opt = {
+            margin:       10,
+            filename:     'Siparis_#' + orderId + '_Fisi.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(opt).save();
+    }
+</script>

@@ -1,0 +1,126 @@
+@using FoodOrderManagementSystem.Models
+@{
+    ViewData["Title"] = "Yönetim Paneli Gösterge Ekranı";
+    ViewData["Breadcrumb"] = "Yönetici / Kontrol Paneli";
+
+    int totalOrders = ViewBag.TotalOrders ?? 0;
+    decimal totalRevenue = ViewBag.TotalRevenue ?? 0;
+    int totalUsers = ViewBag.TotalUsers ?? 0;
+    int totalProducts = ViewBag.TotalProducts ?? 0;
+
+    var recentOrders = ViewBag.RecentOrders as List<Order> ?? new List<Order>();
+    var userDict = ViewBag.UserDict as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+
+<div class="page-header">
+    <div>
+        <h1>Dashboard / Kontrol Paneli</h1>
+        <p>Sistemin genel durumu, sipariş özetleri ve anlık ciro bilgileri</p>
+    </div>
+</div>
+
+<!-- STATS CARDS -->
+<div class="stats-row">
+    <div class="stat-card" style="border-top: 4px solid var(--accent); transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Toplam Ciro</div>
+        <div class="stat-value" style="color:var(--accent);">₺@totalRevenue.ToString("N2")</div>
+    </div>
+    <div class="stat-card" style="border-top: 4px solid #3498DB; transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+        <div class="stat-icon">📋</div>
+        <div class="stat-label">Toplam Sipariş</div>
+        <div class="stat-value" style="color:#3498DB;">@totalOrders</div>
+    </div>
+    <div class="stat-card" style="border-top: 4px solid var(--success); transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+        <div class="stat-icon">👤</div>
+        <div class="stat-label">Toplam Kullanıcı</div>
+        <div class="stat-value" style="color:var(--success);">@totalUsers</div>
+    </div>
+    <div class="stat-card" style="border-top: 4px solid var(--warning); transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+        <div class="stat-icon">🍕</div>
+        <div class="stat-label">Toplam Ürün</div>
+        <div class="stat-value" style="color:var(--warning);">@totalProducts</div>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: start;">
+    
+    <!-- LEFT: RECENT ORDERS -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Son 5 Sipariş</span>
+            <a asp-controller="Order" asp-action="List" class="btn btn-secondary btn-sm">Tüm Siparişleri Gör →</a>
+        </div>
+        <div class="table-wrap">
+            @if (!recentOrders.Any())
+            {
+                <div class="empty-state" style="padding: 40px 24px;">
+                    <div class="empty-icon">🧾</div>
+                    <h3>Henüz sipariş yok</h3>
+                    <p>Siparişler sayfasından yeni sipariş oluşturabilirsiniz.</p>
+                </div>
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sipariş No</th>
+                            <th>Müşteri</th>
+                            <th>Tarih</th>
+                            <th>Tutar</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in recentOrders)
+                        {
+                            var customerName = userDict.ContainsKey(order.UserId) ? userDict[order.UserId] : $"Kullanıcı #{order.UserId}";
+                            <tr>
+                                <td style="font-weight:600; color:var(--accent);">#@order.OrderId</td>
+                                <td>@customerName</td>
+                                <td style="color:var(--muted);">@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td style="font-weight:700; color:var(--accent);">₺@order.TotalAmount.ToString("N2")</td>
+                                <td>
+                                    <a asp-controller="OrderDetail" asp-action="Receipt" asp-route-orderId="@order.OrderId" class="btn btn-secondary btn-sm">
+                                        🧾 Fiş
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+
+    <!-- RIGHT: QUICK ACTIONS -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">Hızlı İşlemler</span>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+                <a asp-controller="Order" asp-action="Edit" class="btn btn-primary" style="justify-content:center; padding:12px;">
+                    ➕ Yeni Sipariş Oluştur
+                </a>
+                <a asp-controller="Product" asp-action="Edit" class="btn btn-secondary" style="justify-content:center; padding:12px;">
+                    🍕 Yeni Ürün Ekle
+                </a>
+                <a asp-controller="User" asp-action="Edit" class="btn btn-secondary" style="justify-content:center; padding:12px;">
+                    👤 Yeni Kullanıcı Ekle
+                </a>
+            </div>
+        </div>
+
+        <div class="card" style="background:var(--surface2);">
+            <div class="card-body">
+                <h3 style="font-size:14px; font-weight:700; margin-bottom:8px;">Yönetim İpucu 💡</h3>
+                <p style="font-size:12px; color:var(--muted); line-height:1.5;">
+                    Siparişleri düzenleyebilir, sipariş detay sayfasından müşterilerinize vermek için fiş PDF çıktısı alabilir veya sipariş özetlerini Excel formatında indirebilirsiniz.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>

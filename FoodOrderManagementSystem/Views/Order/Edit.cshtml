@@ -1,0 +1,194 @@
+@model FoodOrderManagementSystem.Models.Order
+@using FoodOrderManagementSystem.Models
+@{
+    var isNew = Model.OrderId == 0;
+    ViewData["Title"] = isNew ? "Yeni Sipariş" : $"Sipariş #{Model.OrderId}";
+    ViewData["Breadcrumb"] = $"Yönetim / Siparişler / {(isNew ? "Yeni" : "Düzenle")}";
+
+    var users = ViewBag.Users as IEnumerable<User> ?? Enumerable.Empty<User>();
+    var products = ViewBag.Products as IEnumerable<Product> ?? Enumerable.Empty<Product>();
+    var details = ViewBag.Details as IEnumerable<OrderDetail> ?? Enumerable.Empty<OrderDetail>();
+    var lineTotal = details.Sum(d => d.Price * d.Quantity);
+}
+
+<div class="page-header">
+    <div>
+        <h1>@ViewData["Title"]</h1>
+        <p>@(isNew ? "Kullanıcı seçerek sipariş oluşturun, ardından ürün ekleyin" : "Sipariş bilgilerini ve ürünleri yönetin")</p>
+    </div>
+    <a asp-controller="Order" asp-action="List" class="btn btn-secondary">← Listeye Dön</a>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start;">
+
+    <!-- SOL: SİPARİŞ KALEMLERİ -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">Sipariş Kalemleri</span>
+            @if (!isNew)
+            {
+                <span class="badge badge-info">@details.Count() kalem</span>
+            }
+        </div>
+
+        <div class="table-wrap">
+            @if (isNew)
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <h3>Önce siparişi oluşturun</h3>
+                    <p>Sağdaki formdan müşteri seçip siparişi kaydedin, ardından ürün ekleyebilirsiniz.</p>
+                </div>
+            }
+            else if (!details.Any())
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">🛒</div>
+                    <h3>Sipariş boş</h3>
+                    <p>Sağdaki formu kullanarak ürün ekleyin.</p>
+                </div>
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Birim Fiyat</th>
+                            <th>Adet</th>
+                            <th>Ara Toplam</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detail in details)
+                        {
+                            <tr>
+                                <td>
+                                    <div style="font-weight:500;">@detail.ProductName</div>
+                                    <div style="font-size:11px; color:var(--muted);">ID: @detail.ProductId</div>
+                                </td>
+                                <td style="color:var(--muted);">₺@detail.Price.ToString("N2")</td>
+                                <td><span class="badge badge-info">@detail.Quantity adet</span></td>
+                                <td style="font-weight:700; color:var(--accent);">
+                                    ₺@((detail.Price * detail.Quantity).ToString("N2"))
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete('@Url.Action("RemoveDetail", "Order", new { id = detail.OrderDetailId, orderId = Model.OrderId })')">
+                                        🗑
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div style="padding:14px 24px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; align-items:center; gap:16px;">
+                    <span style="font-size:13px; color:var(--muted);">Genel Toplam</span>
+                    <span style="font-size:22px; font-weight:700; color:var(--accent);">
+                        ₺@lineTotal.ToString("N2")
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- SAĞ: FORMLAR -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+
+        <!-- Müşteri / Sipariş kaydı -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">@(isNew ? "Sipariş Oluştur" : "Sipariş Bilgisi")</span>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Order" asp-action="Save" method="post">
+                    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Müşteri Seç</label>
+                            <select class="form-control" name="UserId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var u in users)
+                                {
+                                    @if (Model.UserId == u.UserId)
+                                    {
+                                        <option value="@u.UserId" selected>@u.FullName (@u.Email)</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@u.UserId">@u.FullName (@u.Email)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        @if (!isNew)
+                        {
+                            <div class="form-group">
+                                <label class="form-label">Sipariş Tarihi</label>
+                                <input class="form-control" type="text"
+                                       value="@Model.OrderDate.ToString("dd.MM.yyyy HH:mm")" readonly />
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                            @(isNew ? "➕ Sipariş Oluştur" : "💾 Müşteriyi Güncelle")
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Ürün ekleme (sadece mevcut siparişlerde) -->
+        @if (!isNew)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Ürün Ekle</span>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Order" asp-action="AddDetail" method="post">
+                        <input type="hidden" name="orderId" value="@Model.OrderId" />
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Ürün Seç</label>
+                                <select class="form-control" name="productId" required>
+                                    <option value="">Ürün seçiniz</option>
+                                    @foreach (var p in products)
+                                    {
+                                        <option value="@p.ProductId">
+                                            @p.ProductName — ₺@p.Price.ToString("N2")
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Adet</label>
+                                <input class="form-control" type="number"
+                                       name="quantity" min="1" max="99" value="1" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                                + Siparişe Ekle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @if (details.Any())
+            {
+                <a asp-controller="OrderDetail" asp-action="Receipt"
+                   asp-route-orderId="@Model.OrderId"
+                   class="btn btn-secondary" style="width:100%; justify-content:center;">
+                    🧾 Fişi Görüntüle
+                </a>
+            }
+        }
+    </div>
+</div>
