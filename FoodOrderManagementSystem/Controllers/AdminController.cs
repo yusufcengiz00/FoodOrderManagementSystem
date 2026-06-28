@@ -9,7 +9,7 @@ namespace FoodOrderManagementSystem.Controllers
     {
         public IActionResult Index()
         {
-            // İstatistikleri çekiyoruz
+            // İstatistikler
             var orders = Context.Listeleme<Order>("sp_OrderGetAll").ToList();
             var users = Context.Listeleme<User>("sp_UserGetAll").ToList();
             var products = Context.Listeleme<Product>("sp_ProductGetAll").ToList();
@@ -19,7 +19,6 @@ namespace FoodOrderManagementSystem.Controllers
             int totalUsers = users.Count;
             int totalProducts = products.Count;
 
-            // Görünüm için ViewBag'e atıyoruz
             ViewBag.TotalOrders = totalOrders;
             ViewBag.TotalRevenue = totalRevenue;
             ViewBag.TotalUsers = totalUsers;

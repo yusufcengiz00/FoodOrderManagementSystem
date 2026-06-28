@@ -30,7 +30,7 @@ namespace FoodOrderManagementSystem.Controllers
                 return View();
             }
 
-            // Dapper stored procedure ile kullanıcıları listeleyip eşleştiriyoruz
+            // Kullanıcı Doğrulama
             var users = Context.Listeleme<User>("sp_UserGetAll");
             var user = users.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase) && u.Password == password);
 
@@ -67,7 +67,7 @@ namespace FoodOrderManagementSystem.Controllers
                 return View();
             }
 
-            // E-posta benzersizlik kontrolü
+            // E-posta Kontrolü
             var users = Context.Listeleme<User>("sp_UserGetAll");
             if (users.Any(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase)))
             {
@@ -78,7 +78,7 @@ namespace FoodOrderManagementSystem.Controllers
             try
             {
                 DynamicParameters param = new DynamicParameters();
-                param.Add("@UserId", 0); // Yeni kullanıcı
+                param.Add("@UserId", 0);
                 param.Add("@FullName", fullName);
                 param.Add("@Email", email);
                 param.Add("@Password", password);
