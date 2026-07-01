@@ -34,6 +34,20 @@ FoodOrder, .NET 10 MVC ve Dapper ORM kullanılarak geliştirilmiş, LocalDB MS S
 
 ---
 
+## 📷 Ekran Görüntüleri
+
+<p align="center">
+  <img src="wwwroot/screenshots/1_user_portal.png" width="48%" alt="Kullanıcı Portalı (Salt Okunur Menü)" />
+  <img src="wwwroot/screenshots/2_login_page.png" width="48%" alt="Yönetici Giriş Ekranı" />
+</p>
+<br />
+<p align="center">
+  <img src="wwwroot/screenshots/3_admin_dashboard.png" width="48%" alt="Yönetici Kontrol Paneli" />
+  <img src="wwwroot/screenshots/4_order_receipt.png" width="48%" alt="Sipariş Fişi ve Detay Ekranı" />
+</p>
+
+---
+
 ## 🛠️ Kurulum ve Çalıştırma
 
 ### 1. Veri Tabanının Hazırlanması
