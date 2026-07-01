@@ -83,12 +83,12 @@ Uygulama çalıştıktan sonra tarayıcınızda terminalde belirtilen adrese (ö
 ### 🔐 Admin Panel
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/10f7d7c5-f5ec-4b75-9d59-37d481a2aacc" width="440" alt="Login" />
-  <img src="https://github.com/user-attachments/assets/d5d3f2db-2a16-439b-ad5e-7f066af56e9a" width="440" alt="Register" />
+  <img src="https://github.com/user-attachments/assets/10f7d7c5-f5ec-4b75-9d59-37d481a2aacc" width="49%" alt="Login" />
+  <img src="https://github.com/user-attachments/assets/d5d3f2db-2a16-439b-ad5e-7f066af56e9a" width="49%" alt="Register" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/7a219e3c-899a-46fc-bd33-af7ebc9804f7" width="900" alt="Dashboard" />
+  <img src="https://github.com/user-attachments/assets/7a219e3c-899a-46fc-bd33-af7ebc9804f7" width="100%" alt="Dashboard" />
 </p>
 
 ---
