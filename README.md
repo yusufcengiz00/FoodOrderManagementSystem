@@ -65,3 +65,63 @@ Uygulama çalıştıktan sonra tarayıcınızda terminalde belirtilen adrese (ö
   - `Account/`: Giriş ve Kayıt ekranları.
   - `Admin/`: Dashboard gösterge paneli.
   - `OrderDetail/Receipt.cshtml`: Sipariş fişi ve PDF/Excel indirme butonları.
+
+
+      ---
+
+## 📸 Uygulama Görselleri
+
+### 👤 Kullanıcı Portalı
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/dcd74207-9b18-43d6-9462-a5387038b8a1" width="900" alt="Kullanıcı Portalı" />
+</p>
+
+---
+
+### 🔐 Admin Panel Giriş Ekranı
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/10f7d7c5-f5ec-4b75-9d59-37d481a2aacc" width="900" alt="Admin Giriş" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d5d3f2db-2a16-439b-ad5e-7f066af56e9a" width="440" alt="Dashboard" />
+  <img src="https://github.com/user-attachments/assets/7a219e3c-899a-46fc-bd33-af7ebc9804f7" width="440" alt="İstatistikler" />
+</p>
+
+---
+
+### 🛒 Sipariş Yönetim Ekranı
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/94e00fc5-28c6-4389-8b50-09c4d6b74494" width="900" alt="Sipariş Yönetimi" />
+</p>
+
+---
+
+### 🧾 Sipariş Fişleri Ekranı
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/65cc5e7f-b48a-44a4-a31d-f8b07e20a763" width="900" alt="Sipariş Fişleri" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/56cc2346-0b5b-4e35-bcd3-cb940e4d913d" width="600" alt="Fiş Detayı" />
+</p>
+
+---
+
+### 📦 Ürün Yönetim Ekranı
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4d72500b-a4f8-4d42-b5b2-ace6a61267fd" width="900" alt="Ürün Yönetimi" />
+</p>
+
+---
+
+### 👥 Kullanıcı Yönetim Ekranı
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/14474a6c-c485-4c18-88a7-003c5c36ccfb" width="900" alt="Kullanıcı Yönetimi" />
+</p>
