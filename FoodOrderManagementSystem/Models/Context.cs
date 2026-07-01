@@ -1,15 +1,16 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq; // İlk veya tek sonucu almak için gerekli
+using System.Linq;
 
 namespace FoodOrderManagementSystem.Models
 {
     public class Context
     {
         public static string connectionstring = @"Server=(localdb)\MSSQLLocalDB;Database=FoodOrderDB;Integrated Security=true;";
-        // Kayıt ekleme, güncelleme ve silme için
+
+        // CUD İşlemleri
         public static void Execute(string procadi, DynamicParameters param = null)
         {
             using (SqlConnection db = new SqlConnection(connectionstring))
@@ -18,7 +19,7 @@ namespace FoodOrderManagementSystem.Models
             }
         }
 
-        // Context.cs içerisine ekle
+        // Tekil Değer Getirme
         public static T ExecuteScalar<T>(string procadi, DynamicParameters param = null)
         {
             using (SqlConnection db = new SqlConnection(connectionstring))
@@ -27,7 +28,7 @@ namespace FoodOrderManagementSystem.Models
             }
         }
 
-        // Listeleme işlemleri için
+        // Listeleme
         public static IEnumerable<T> Listeleme<T>(string procadi, DynamicParameters param = null)
         {
             using (SqlConnection db = new SqlConnection(connectionstring))
@@ -36,7 +37,7 @@ namespace FoodOrderManagementSystem.Models
             }
         }
 
-        // Tek bir satır getirme (Örn: Giriş yapan kullanıcı, ID'ye göre ürün)
+        // Tekil Kayıt Getirme
         public static T Getir<T>(string procadi, DynamicParameters param = null)
         {
             using (SqlConnection db = new SqlConnection(connectionstring))

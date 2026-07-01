@@ -37,9 +37,7 @@ FoodOrder, .NET 10 MVC ve Dapper ORM kullanılarak geliştirilmiş, LocalDB MS S
 ## 🛠️ Kurulum ve Çalıştırma
 
 ### 1. Veri Tabanının Hazırlanması
-Proje, MS SQL Server LocalDB altyapısını kullanmaktadır. Veri tabanını oluşturmak için:
-1. SQL Server Management Studio (SSMS) veya Visual Studio veritabanı aracını açın.
-2. Sunucu adı olarak `(localdb)\MSSQLLocalDB` adresine bağlanın.
+Proje, MS SQL Server LocalDB altyapısını kullanmaktadır. Sunucu adı `(localdb)\MSSQLLocalDB` olarak bağlanıp `FoodOrderDB` adında bir veritabanının, tabloların ve stored procedure'lerin tanımlanmış olması gerekmektedir.
 
 ### 2. Projenin Çalıştırılması
 Terminal veya PowerShell üzerinden projenin ana dizinine gidin ve aşağıdaki komutları çalıştırın:

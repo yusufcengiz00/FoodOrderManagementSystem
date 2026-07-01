@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# IDE / VS Code / Rider Settings
+.vscode/
+.idea/
+*.sln.iml
+.vs/
+.gemini/

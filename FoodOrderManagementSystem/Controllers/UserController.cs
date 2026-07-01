@@ -9,16 +9,16 @@ namespace dapperProject.Controllers
 {
     public class UserController : BaseController
     {
-        // Tüm kullanıcıları listeler
+        // Listeleme
         public IActionResult List()
         {
             return View(Context.Listeleme<User>("sp_UserGetAll"));
         }
 
-        // Düzenleme veya yeni kayıt sayfası (Get)
+        // Ekle / Düzenle
         public IActionResult Edit(int id = 0)
         {
-            if (id == 0) return View(new User()); // Yeni kayıt için boş model
+            if (id == 0) return View(new User());
 
             DynamicParameters param = new DynamicParameters();
             param.Add("@UserId", id);
@@ -27,7 +27,7 @@ namespace dapperProject.Controllers
             return View(user);
         }
 
-        // Veriyi kaydeder veya günceller (Post)
+        // Kaydet
         [HttpPost]
         public IActionResult Save(User user)
         {
@@ -41,7 +41,7 @@ namespace dapperProject.Controllers
             return RedirectToAction("List");
         }
 
-        // Kullanıcıyı siler
+        // Sil
         public IActionResult Delete(int id)
         {
             DynamicParameters param = new DynamicParameters();
