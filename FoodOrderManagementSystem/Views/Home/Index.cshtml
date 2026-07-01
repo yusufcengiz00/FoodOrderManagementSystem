@@ -1,8 +1,318 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model IEnumerable<FoodOrderManagementSystem.Models.Product>
+@{
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FoodOrder — Yemek Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+        :root {
+            --bg: #0F1117;
+            --surface: #1A1D27;
+            --surface2: #22263A;
+            --border: #2E3248;
+            --accent: #FF6B35;
+            --accent-dim: #FF6B3520;
+            --text: #E8EAF0;
+            --muted: #7B8099;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(15, 17, 23, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 10px var(--accent-dim);
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+        }
+
+        .btn-login {
+            background: var(--accent);
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: var(--radius);
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px var(--accent-dim);
+        }
+
+        .btn-login:hover {
+            background: #e55a26;
+            transform: translateY(-1px);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            padding: 80px 40px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 16px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* ── PRODUCTS GRID ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .product-emoji {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .product-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .product-info p {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px dashed var(--border);
+            padding-top: 16px;
+            margin-top: auto;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .product-status {
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--surface2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: var(--muted);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <div class="logo-icon">🍽</div>
+            <span class="logo-text">FoodOrder</span>
+        </a>
+        <div class="nav-links">
+            <a href="#menu" class="nav-link">Menü</a>
+            <a href="/Account/Login" class="btn-login">🔑 Admin Girişi</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-badge">✨ Günlük Taze ve Sıcak</div>
+        <h1>Lezzetli Yemekler, <span>Hızlı Sipariş</span> Yönetimi</h1>
+        <p>
+            Menümüzdeki en lezzetli yemekleri ve güncel fiyatları aşağıdan salt okunur olarak inceleyebilirsiniz.
+            Sipariş kaydı oluşturmak için yönetici paneli üzerinden yetkili personel girişi yapılması gerekmektedir.
+        </p>
+    </header>
+
+    <!-- MAIN MENU -->
+    <main class="container" id="menu">
+        <h2 class="section-title">🍕 Lezzet Menüsü</h2>
+        
+        <div class="grid">
+            @if (Model != null && Model.Any())
+            {
+                var emojis = new[] { "🍕", "🍔", "🍟", "🌮", "🍰", "🍩", "🥗", "🥤", "🍖" };
+                var index = 0;
+                foreach (var product in Model)
+                {
+                    var emoji = emojis[index % emojis.Length];
+                    index++;
+                    
+                    <div class="product-card">
+                        <div>
+                            <div class="product-emoji">@emoji</div>
+                            <div class="product-info">
+                                <h3>@product.ProductName</h3>
+                                <p>Premium malzemeler ile özenle hazırlanmıştır.</p>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <span class="product-price">₺@product.Price.ToString("N2")</span>
+                            <span class="product-status">Aktif</span>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--muted);">
+                    Menüde henüz ürün bulunmuyor.
+                </div>
+            }
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        © @DateTime.Now.Year FoodOrder. Tüm Hakları Saklıdır. Yönetici Paneli entegrasyonu mevcuttur.
+    </footer>
+
+</body>
+</html>

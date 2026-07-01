@@ -4,11 +4,12 @@ using System.Diagnostics;
 
 namespace FoodOrderManagementSystem.Controllers
 {
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Admin");
+            var products = Context.Listeleme<Product>("sp_ProductGetAll");
+            return View(products);
         }
 
         public IActionResult Privacy()
