@@ -80,6 +80,7 @@ Uygulama çalıştıktan sonra tarayıcınızda terminalde belirtilen adrese (ö
 
 ---
 
+
 ### 🔐 Admin Panel
 
 <p align="center">
