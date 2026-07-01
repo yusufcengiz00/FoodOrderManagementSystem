@@ -34,20 +34,6 @@ FoodOrder, .NET 10 MVC ve Dapper ORM kullanılarak geliştirilmiş, LocalDB MS S
 
 ---
 
-## 📷 Ekran Görüntüleri
-
-<p align="center">
-  <img src="wwwroot/screenshots/1_user_portal.png" width="48%" alt="Kullanıcı Portalı (Salt Okunur Menü)" />
-  <img src="wwwroot/screenshots/2_login_page.png" width="48%" alt="Yönetici Giriş Ekranı" />
-</p>
-<br />
-<p align="center">
-  <img src="wwwroot/screenshots/3_admin_dashboard.png" width="48%" alt="Yönetici Kontrol Paneli" />
-  <img src="wwwroot/screenshots/4_order_receipt.png" width="48%" alt="Sipariş Fişi ve Detay Ekranı" />
-</p>
-
----
-
 ## 🛠️ Kurulum ve Çalıştırma
 
 ### 1. Veri Tabanının Hazırlanması
@@ -83,6 +69,7 @@ Uygulama çalıştıktan sonra tarayıcınızda terminalde belirtilen adrese (ö
 
       ---
 
+
 ## 📸 Uygulama Görselleri
 
 ### 👤 Kullanıcı Portalı
@@ -93,15 +80,15 @@ Uygulama çalıştıktan sonra tarayıcınızda terminalde belirtilen adrese (ö
 
 ---
 
-### 🔐 Admin Panel Giriş Ekranı
+### 🔐 Admin Panel
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/10f7d7c5-f5ec-4b75-9d59-37d481a2aacc" width="900" alt="Admin Giriş" />
+  <img src="https://github.com/user-attachments/assets/10f7d7c5-f5ec-4b75-9d59-37d481a2aacc" width="440" alt="Login" />
+  <img src="https://github.com/user-attachments/assets/d5d3f2db-2a16-439b-ad5e-7f066af56e9a" width="440" alt="Register" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/d5d3f2db-2a16-439b-ad5e-7f066af56e9a" width="440" alt="Dashboard" />
-  <img src="https://github.com/user-attachments/assets/7a219e3c-899a-46fc-bd33-af7ebc9804f7" width="440" alt="İstatistikler" />
+  <img src="https://github.com/user-attachments/assets/7a219e3c-899a-46fc-bd33-af7ebc9804f7" width="900" alt="Dashboard" />
 </p>
 
 ---
@@ -139,3 +126,5 @@ Uygulama çalıştıktan sonra tarayıcınızda terminalde belirtilen adrese (ö
 <p align="center">
   <img src="https://github.com/user-attachments/assets/14474a6c-c485-4c18-88a7-003c5c36ccfb" width="900" alt="Kullanıcı Yönetimi" />
 </p>
+```
+
